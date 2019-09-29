@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import argparse
 import glob
+import matplotlib.pyplot as plt
 
 #realiza a leitura da imagem
 image = cv2.imread('test_image.jpg')
@@ -22,7 +23,18 @@ def auto_canny(imagem, sigma=0.33):
 	edged = cv2.Canny(imagem, lower, upper)
 	# return da funcao
 	return edged
+
+#funcao para criar mascara para definir area de interesse
+def regiao(imagem):
+    altura = imagem.shape[0]
+    poligono = np.array([
+    [(200, altura), (1100,altura), (550, 250)]
+    ])
+    mascara = np.zeros_like(imagem)
+    cv2.fillPoly(mascara, poligono, 255)
+    imagem_mascarada = cv2.bitwise_and(imagem,mascara)
+    return imagem_mascarada
 #chama a funcao de bordas utilizando a imagem com blur
 canny = auto_canny(blur)
-cv2.imshow('Resultado', canny)
-cv2.waitKey(0)
+plt.imshow(regiao(canny))
+plt.show()
